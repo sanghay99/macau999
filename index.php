@@ -1,177 +1,96 @@
 <?php
-
-session_start();
-
-include("includes/db.php");
-include("includes/header.php");
-include("functions/functions.php");
-include("includes/main.php");
-
+include 'functions.php';
+//if(empty(_session('login')))
+//header("location:login.php");
 ?>
+<!DOCTYPE html>
+<html lang="en">
 
+<head>
+	<meta charset="utf-8" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<link rel="icon" href="assets/images/logo.jpg" />
 
-  <!-- Cover -->
-  <main>
-    <div class="hero">
-      <a href="shop.php" class="btn1">View all products
-</a>
-    </div>
-    <!-- Main -->
-    <div class="wrapper">
-            <h1>Featured Collection<h1>
-            
-      </div>
+	<title>Sistem Pakar Perawatan Kulit Wajah</title>
+	<link href="assets/css/yeti-bootstrap.min.css" rel="stylesheet" />
+	<link href="assets/css/general.css" rel="stylesheet" />
+	<link href="assets/css/select2.min.css" rel="stylesheet" />
+	<script src="assets/js/jquery.min.js"></script>
+	<script src="assets/js/bootstrap.min.js"></script>
+	<script src="assets/js/select2.min.js"></script>
+	<script type="text/javascript">
+		$(function() {
+			$("select:not(.default)").select2();
+		})
+	</script>
+	<style type="text/css">
+		.navbar-brand img {
+    height: auto;
+    max-height: 40px; /* Sesuaikan ukuran logo sesuai kebutuhan */
+}
+	</style>
+</head>
 
+<body>
+	<nav class="navbar navbar-expand-lg bg-body-tertiary" style="background-color: #D1F2EB">
+		<div class="container">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+					<span class="sr-only">Toggle navigation</span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					
+				</button>
+				
+			</div>
+			<div id="navbar" class="navbar-collapse collapse">
+				<ul class="nav navbar-nav">
+					<li><a class="navbar-brand" href="?">
+					    <img src="assets/images/logo.jpg" alt="Nama Aplikasi" style="max-height: 100%; max-width: 100%;">
+					</a>
+					</li>
+					<li><a class="navbar-brand" href="?"><span class="glyphicon glyphicon-home"></span> Beranda</a></li>
+					<?php if (_session('level') == 'admin') : ?>
+						<li><a href="?m=user"><span class="glyphicon glyphicon-user"></span> Daftar Pengguna</a></li>
+						<li><a href="?m=diagnosa"><span class="glyphicon glyphicon-pushpin"></span> Diagnosa</a></li>
+						<li><a href="?m=gejala"><span class="glyphicon glyphicon-flash"></span> Gejala</a></li>
+						<li><a href="?m=relasi"><span class="glyphicon glyphicon-star"></span> Relasi</a></li>
+						<li><a href="?m=rule"><span class="glyphicon glyphicon-star"></span> Rule</a></li>
+						<li><a href="aksi.php?m=konsultasi&act=new"><span class="glyphicon glyphicon-stats"></span> Konsultasi</a></li>
+						<li><a href="?m=password"><span class="glyphicon glyphicon-lock"></span> Password</a></li>
+						<li><a href="aksi.php?act=logout"><span class="glyphicon glyphicon-log-out"></span> Logout (<?= _session('login') ?>)</a></li>
+					<?php elseif (_session('level') == 'user') : ?>
+						<li><a href="?m=diagnosa_user"><span class="glyphicon glyphicon-pushpin"></span> Diagnosa</a></li>
+						<li><a href="?m=gejala_user"><span class="glyphicon glyphicon-flash"></span> Gejala</a></li>
+						<li><a href="aksi.php?m=konsultasi&act=new"><span class="glyphicon glyphicon-stats"></span> Konsultasi</a></li>
+						<li><a href="?m=password"><span class="glyphicon glyphicon-lock"></span> Password</a></li>
+						<li><a href="aksi.php?act=logout"><span class="glyphicon glyphicon-log-out"></span> Logout (<?= _session('login') ?>)</a></li>
+					<?php else : ?>
+						<li><a href="?m=bantuan"><span class="glyphicon glyphicon-lock"></span> Bantuan</a></li>
+						<li><a href="?m=login"><span class="glyphicon glyphicon-log-in"></span> Masuk</a></li>
+						<li><a href="?m=signup"><span class="glyphicon glyphicon-log-in"></span> Daftar</a></li>
+					<?php endif ?>
+				</ul>
+			</div>
+		</div>
+	</nav>
+	<div class="container">
+		<?php
+		if (!_session('login') && in_array($mod, array('diagnosa', 'gejala', 'relasi', 'rule', 'password')))
+			$mod = 'home';
 
-
-    <div id="content" class="container"><!-- container Starts -->
-
-    <div class="row"><!-- row Starts -->
-
-    <?php
-
-    getPro();
-
-    ?>
-
-    </div><!-- row Ends -->
-
-    </div><!-- container Ends -->
-    <!-- FOOTER -->
-    <footer class="page-footer">
-
-      <div class="footer-nav">
-        <div class="container clearfix">
-
-          <div class="footer-nav__col footer-nav__col--info">
-            <div class="footer-nav__heading">Information</div>
-            <ul class="footer-nav__list">
-              <li class="footer-nav__item">
-                <a href="#" class="footer-nav__link">The brand</a>
-              </li>
-              <li class="footer-nav__item">
-                <a href="#" class="footer-nav__link">Local stores</a>
-              </li>
-              <li class="footer-nav__item">
-                <a href="#" class="footer-nav__link">Customer service</a>
-              </li>
-              <li class="footer-nav__item">
-                <a href="#" class="footer-nav__link">Privacy &amp; cookies</a>
-              </li>
-              <li class="footer-nav__item">
-                <a href="#" class="footer-nav__link">Site map</a>
-              </li>
-            </ul>
-          </div>
-
-          <div class="footer-nav__col footer-nav__col--whybuy">
-            <div class="footer-nav__heading">Why buy from us</div>
-            <ul class="footer-nav__list">
-              <li class="footer-nav__item">
-                <a href="#" class="footer-nav__link">Shipping &amp; returns</a>
-              </li>
-              <li class="footer-nav__item">
-                <a href="#" class="footer-nav__link">Secure shipping</a>
-              </li>
-              <li class="footer-nav__item">
-                <a href="#" class="footer-nav__link">Testimonials</a>
-              </li>
-              <li class="footer-nav__item">
-                <a href="#" class="footer-nav__link">Award winning</a>
-              </li>
-              <li class="footer-nav__item">
-                <a href="#" class="footer-nav__link">Ethical trading</a>
-              </li>
-            </ul>
-          </div>
-
-          <div class="footer-nav__col footer-nav__col--account">
-            <div class="footer-nav__heading">Your account</div>
-            <ul class="footer-nav__list">
-              <li class="footer-nav__item">
-                <a href="#" class="footer-nav__link">Sign in</a>
-              </li>
-              <li class="footer-nav__item">
-                <a href="#" class="footer-nav__link">Register</a>
-              </li>
-              <li class="footer-nav__item">
-                <a href="#" class="footer-nav__link">View cart</a>
-              </li>
-              <li class="footer-nav__item">
-                <a href="#" class="footer-nav__link">View your lookbook</a>
-              </li>
-              <li class="footer-nav__item">
-                <a href="#" class="footer-nav__link">Track an order</a>
-              </li>
-              <li class="footer-nav__item">
-                <a href="#" class="footer-nav__link">Update information</a>
-              </li>
-            </ul>
-          </div>
-
-
-          <div class="footer-nav__col footer-nav__col--contacts">
-            <div class="footer-nav__heading">Contact details</div>
-            <address class="address">
-            Head Office: Avenue Fashion.<br>
-            180-182 Regent Street, London.
-          </address>
-            <div class="phone">
-              Telephone:
-              <a class="phone__number" href="tel:0123456789">0123-456-789</a>
-            </div>
-            <div class="email">
-              Email:
-              <a href="mailto:support@yourwebsite.com" class="email__addr">support@yourwebsite.com</a>
-            </div>
-          </div>
-
-        </div>
-      </div>
-
-      <!-- <div class="banners">
-        <div class="container clearfix">
-
-          <div class="banner-award">
-            <span>Award winner</span><br> Fashion awards 2016
-          </div>
-
-          <div class="banner-social">
-            <a href="#" class="banner-social__link">
-            <i class="icon-facebook"></i>
-          </a>
-            <a href="#" class="banner-social__link">
-            <i class="icon-twitter"></i>
-          </a>
-            <a href="#" class="banner-social__link">
-            <i class="icon-instagram"></i>
-          </a>
-            <a href="#" class="banner-social__link">
-            <i class="icon-pinterest-circled"></i>
-          </a>
-          </div>
-
-        </div>
-      </div> -->
-
-      <div class="page-footer__subline">
-        <div class="container clearfix">
-
-          <div class="copyright">
-            &copy; <?php echo date("Y");?> Ecommerce Website-PHP&trade;
-          </div>
-
-          <div class="developer">
-            Developed by Yasser Dalouzi
-          </div>
-
-          <div class="designby">
-            Design by Yasser Dalouzi
-          </div>
-
-        </div>
-      </div>
-    </footer>
+		if (file_exists($mod . '.php'))
+			include $mod . '.php';
+		else
+			include 'home.php';
+		?>
+	</div>
+	<footer class="footer" >
+		<div class="container">
+			<p>Copyright &copy; <?= date('Y') ?> The Clinic unindraisme | By kelompok z <em class="pull-right">Metode Certainy Factor</em></p>
+		</div>
+	</footer>
 </body>
 
 </html>
